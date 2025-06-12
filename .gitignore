@@ -1,0 +1,45 @@
+# Tệp và thư mục của hệ điều hành
+# =================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Tệp và thư mục của Visual Studio Code
+# =====================================
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Tệp và thư mục build của .NET Core
+# =================================
+/bin
+/obj
+
+# File do Rider IDE tạo ra
+# ========================
+.idea/
+
+# File chứa biến môi trường và thông tin nhạy cảm
+# ==============================================
+*.env
+.env
+.env.*
+! .env.example
+
+# File cấu hình ghi đè của Docker Compose (dành riêng cho local)
+# =============================================================
+docker-compose.override.yml
+
+# Các file khác
+# =============
+*.user
+*.suo
+
+# Bỏ qua các file chứng chỉ bảo mật
+*.pfx
