@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: classmanager-db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=yourStrong(!)Password123
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqldata:/var/opt/mssql
+
+  api:
+    container_name: classmanager-api
+    build:
+      context: .
+      dockerfile: src/Api/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Database=ClassManagerDB;User Id=sa;Password=yourStrong(!)Password123;TrustServerCertificate=True
+      - Kestrel__Certificates__Default__Password=m@nhCuong201196
+      - Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      # === THAY ĐỔI DUY NHẤT LÀ Ở ĐÂY ===
+      # Ánh xạ thư mục .certs từ máy bạn vào thư mục /https trong container
+      - ./.certs:/https/
+    depends_on:
+      - db
+
+volumes:
+  sqldata:
