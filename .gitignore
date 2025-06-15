@@ -34,7 +34,7 @@ Thumbs.db
 
 # File cấu hình ghi đè của Docker Compose (dành riêng cho local)
 # =============================================================
-docker-compose.override.yml
+#docker-compose.override.yml
 
 # Các file khác
 # =============
