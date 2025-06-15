@@ -1,0 +1,30 @@
+# render.yaml - Blueprint for deploying ClassManager on Render
+
+services:
+  # Dịch vụ Database PostgreSQL
+  # Render sẽ tự động tạo một database Postgres cho bạn
+  - type: psql
+    name: classmanager-db
+    plan: starter # Gói miễn phí
+
+  # Dịch vụ Web cho API
+  - type: web
+    name: classmanager-api
+    # Ra lệnh cho Render sử dụng Docker để chạy service này
+    runtime: docker
+    # Đường dẫn tới Dockerfile của bạn
+    dockerfilePath: ./src/Api/Dockerfile
+    # Cấu hình các biến môi trường
+    envVars:
+      # Render tự quản lý HTTPS, bên trong container chỉ cần chạy HTTP
+      - key: ASPNETCORE_URLS
+        value: http://0.0.0.0:8080
+      # Lấy chuỗi kết nối tự động từ service database 'classmanager-db'
+      - key: ConnectionStrings__DefaultConnection
+        fromService:
+          type: psql
+          name: classmanager-db
+          property: connectionString
+      # Tự động apply migrations khi khởi động (chỉ nên dùng cho dev/staging)
+      - key: APPLY_MIGRATIONS
+        value: true

@@ -64,6 +64,12 @@
               "target": "Package",
               "version": "[9.0.0, )"
             },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.6, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[8.1.4, )"
@@ -204,6 +210,16 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity": {
+              "target": "Package",
+              "version": "[2.3.1, )"
+            },
+            "Microsoft.Extensions.Identity.Stores": {
+              "target": "Package",
+              "version": "[9.0.6, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -253,6 +269,9 @@
             "projectReferences": {
               "D:\\MyApp\\ThamClass\\ClassManager\\src\\Application\\Application.csproj": {
                 "projectPath": "D:\\MyApp\\ThamClass\\ClassManager\\src\\Application\\Application.csproj"
+              },
+              "D:\\MyApp\\ThamClass\\ClassManager\\src\\Domain\\Domain.csproj": {
+                "projectPath": "D:\\MyApp\\ThamClass\\ClassManager\\src\\Domain\\Domain.csproj"
               }
             }
           }
@@ -286,6 +305,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.6, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[9.0.4, )"
             }
           },
           "imports": [

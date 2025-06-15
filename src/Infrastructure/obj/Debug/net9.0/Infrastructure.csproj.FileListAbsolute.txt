@@ -16,3 +16,5 @@ D:\MyApp\ThamClass\ClassManager\src\Infrastructure\obj\Debug\net9.0\Infrastructu
 D:\MyApp\ThamClass\ClassManager\src\Infrastructure\obj\Debug\net9.0\refint\Infrastructure.dll
 D:\MyApp\ThamClass\ClassManager\src\Infrastructure\obj\Debug\net9.0\Infrastructure.pdb
 D:\MyApp\ThamClass\ClassManager\src\Infrastructure\obj\Debug\net9.0\ref\Infrastructure.dll
+D:\MyApp\ThamClass\ClassManager\src\Infrastructure\bin\Debug\net9.0\Infrastructure.runtimeconfig.json
+D:\MyApp\ThamClass\ClassManager\src\Infrastructure\obj\Debug\net9.0\Infrastructure.genruntimeconfig.cache

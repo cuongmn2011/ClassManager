@@ -4,14 +4,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Application.Interfaces;
 using Api.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+// builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//     options.UseSqlServer(connectionString));
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddIdentity<Domain.Entities.User, Domain.Entities.Role>(options =>
 {
@@ -38,6 +43,25 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+// This section will automatically apply pending migrations on startup.
+// This is convenient for development but should be used with caution in production.
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        // Ensure the database is created and apply any pending migrations
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        // Log the error if migration fails
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database.");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
