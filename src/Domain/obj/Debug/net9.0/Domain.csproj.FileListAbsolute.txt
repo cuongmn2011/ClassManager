@@ -10,3 +10,4 @@ D:\MyApp\ThamClass\ClassManager\src\Domain\obj\Debug\net9.0\Domain.dll
 D:\MyApp\ThamClass\ClassManager\src\Domain\obj\Debug\net9.0\refint\Domain.dll
 D:\MyApp\ThamClass\ClassManager\src\Domain\obj\Debug\net9.0\Domain.pdb
 D:\MyApp\ThamClass\ClassManager\src\Domain\obj\Debug\net9.0\ref\Domain.dll
+D:\MyApp\ThamClass\ClassManager\src\Domain\obj\Debug\net9.0\Domain.csproj.AssemblyReference.cache
