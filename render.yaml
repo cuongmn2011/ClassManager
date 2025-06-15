@@ -1,33 +1,26 @@
-# render.yaml - Cấu trúc Blueprint đã được sửa lỗi
+# render.yaml - FINAL CORRECTED VERSION
 
-# Định nghĩa tất cả các database trước
+# Databases have their own top-level key.
 databases:
-  # Dịch vụ Database PostgreSQL
-  - name: classmanager-db      # Tên của service database
-    databaseName: classmanagerdb  # Tên của database thực tế sẽ được tạo
-    user: classmanager_user      # Tên user để kết nối tới database
-    plan: starter                # Sử dụng gói miễn phí 'starter' của Render
+  - name: classmanager-db
+    plan: starter
+    databaseName: classmanagerdb
+    user: classmanager_user
 
-# Định nghĩa tất cả các dịch vụ chạy code (API, workers, etc.)
+# Services have their own separate top-level key.
 services:
-  # Dịch vụ Web cho API của chúng ta
   - type: web
     name: classmanager-api
     runtime: docker
-    # Đường dẫn tới Dockerfile
     dockerfilePath: ./src/Api/Dockerfile
-    # Cấu hình các biến môi trường
     envVars:
-      # Render tự quản lý HTTPS, bên trong container chỉ cần chạy HTTP trên cổng 8080
       - key: ASPNETCORE_URLS
         value: http://0.0.0.0:8080
-      # Tự động lấy chuỗi kết nối từ service database 'classmanager-db' đã định nghĩa ở trên
+      # This is the corrected block for the connection string
       - key: ConnectionStrings__DefaultConnection
         fromService:
-          # === PHẦN SỬA LỖI LÀ Ở ĐÂY ===
-          # Chúng ta đã xóa dòng "type: psql". Render sẽ tự tìm thấy database dựa vào "name".
-          name: classmanager-db
+          type: psql  # This 'type' key IS required, my apologies for the previous instruction.
+          name: classmanager-db # This name must match the database name above.
           property: connectionString
-      # Tự động apply migrations khi khởi động
       - key: APPLY_MIGRATIONS
         value: "true"
