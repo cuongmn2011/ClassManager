@@ -39,6 +39,7 @@ ClassManager is a service designed to manage classes efficiently. It includes an
 4. The API service will be available at:
    - HTTP: `http://localhost:8080`
    - HTTPS: `https://localhost:8081`
+   - https://localhost:8081/swagger
 
 ### Stopping the Services
 To stop the services, run:
