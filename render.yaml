@@ -1,4 +1,4 @@
-# render.yaml - Cấu trúc Blueprint đã được sửa lại cho ClassManager
+# render.yaml - Cấu trúc Blueprint đã được sửa lỗi
 
 # Định nghĩa tất cả các database trước
 databases:
@@ -24,7 +24,8 @@ services:
       # Tự động lấy chuỗi kết nối từ service database 'classmanager-db' đã định nghĩa ở trên
       - key: ConnectionStrings__DefaultConnection
         fromService:
-          type: psql
+          # === PHẦN SỬA LỖI LÀ Ở ĐÂY ===
+          # Chúng ta đã xóa dòng "type: psql". Render sẽ tự tìm thấy database dựa vào "name".
           name: classmanager-db
           property: connectionString
       # Tự động apply migrations khi khởi động
