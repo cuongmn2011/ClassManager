@@ -1,27 +1,27 @@
-# render.yaml - NEW APPROACH: Manual Connection String
-
-databases:
-  - name: classmanager-db
-    plan: starter
-    databaseName: classmanagerdb
-    user: classmanager_user
+# render.yaml - Cấu hình cuối cùng để triển khai lên Render
 
 services:
+  # Dịch vụ Web cho API của chúng ta
   - type: web
     name: classmanager-api
+    # Môi trường chạy là Docker
     runtime: docker
+    # Tự động triển khai khi có commit mới trên branch được chỉ định
+    autoDeploy: true
+    # Branch nguồn để triển khai
+    branch: develop
+    # Đường dẫn tới Dockerfile
     dockerfilePath: ./src/Api/Dockerfile
+    # Render cần một đường dẫn để kiểm tra xem service đã "sống" hay chưa
+    healthCheckPath: /swagger/index.html
+    # Cấu hình các biến môi trường
     envVars:
+      # URL cho Kestrel bên trong container. Render sẽ lo việc HTTPS bên ngoài.
       - key: ASPNETCORE_URLS
         value: http://0.0.0.0:8080
-      
-      # --- PHẦN THAY ĐỔI LÀ Ở ĐÂY ---
-      # Thay vì dùng 'fromService', chúng ta tự tạo chuỗi kết nối
-      # từ các biến môi trường mà Render cung cấp cho service 'classmanager-db'.
-      # Cú pháp ${serviceName.property} sẽ tự động được thay thế khi chạy.
-      - key: ConnectionStrings__DefaultConnection
-        value: "Host=${classmanager-db.host};Port=5432;Database=${classmanager-db.database};Username=${classmanager-db.user};Password=${classmanager-db.password}"
-      # --- KẾT THÚC PHẦN THAY ĐỔI ---
-
+      # Tự động apply migrations khi khởi động
       - key: APPLY_MIGRATIONS
         value: "true"
+      # Lấy chuỗi kết nối từ một "Secret Key" trên dashboard của Render
+      - key: ConnectionStrings__DefaultConnection
+        fromSecret: AzureSqlConnectionString
