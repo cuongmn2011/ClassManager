@@ -1,37 +1,29 @@
-version: '3.8'
+# docker-compose.yml - Phiên bản cuối cùng đã sửa lỗi HTTPS
 
 services:
-  db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: classmanager-db
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=yourStrong(!)Password123
-    ports:
-      - "1433:1433"
-    volumes:
-      - sqldata:/var/opt/mssql
-
+  # Dịch vụ Web cho API của chúng ta
   api:
     container_name: classmanager-api
     build:
       context: .
       dockerfile: src/Api/Dockerfile
+    # Ra lệnh cho Docker Compose đọc các biến từ file .env
+    env_file:
+      - .env
     ports:
       - "8080:8080"
       - "8081:8081"
+    volumes:
+      # Gắn thư mục .certs từ máy bạn vào thư mục /https trong container
+      - ./.certs:/https/
     environment:
+      # Sử dụng biến đã được định nghĩa trong file .env
+      - ConnectionStrings__DefaultConnection=${DefaultConnectionString}
+      # Cấu hình các URL
       - ASPNETCORE_URLS=https://+:8081;http://+:8080
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=db;Database=ClassManagerDB;User Id=sa;Password=yourStrong(!)Password123;TrustServerCertificate=True
-      - Kestrel__Certificates__Default__Password=m@nhCuong201196
+      # === PHẦN BỊ THIẾU LÀ Ở ĐÂY ===
+      # Chỉ cho Kestrel biết mật khẩu của file chứng chỉ
+      - Kestrel__Certificates__Default__Password=${KestrelCertPassword}
+      # Chỉ cho Kestrel biết đường dẫn tới file chứng chỉ BÊN TRONG container
       - Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-    volumes:
-      # === THAY ĐỔI DUY NHẤT LÀ Ở ĐÂY ===
-      # Ánh xạ thư mục .certs từ máy bạn vào thư mục /https trong container
-      - ./.certs:/https/
-    depends_on:
-      - db
-
-volumes:
-  sqldata:

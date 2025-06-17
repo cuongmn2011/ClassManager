@@ -71,8 +71,6 @@ D:\MyApp\ThamClass\ClassManager\src\Api\bin\Debug\net9.0\Microsoft.IdentityModel
 D:\MyApp\ThamClass\ClassManager\src\Api\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
 D:\MyApp\ThamClass\ClassManager\src\Api\bin\Debug\net9.0\Microsoft.SqlServer.Server.dll
 D:\MyApp\ThamClass\ClassManager\src\Api\bin\Debug\net9.0\Microsoft.Win32.SystemEvents.dll
-D:\MyApp\ThamClass\ClassManager\src\Api\bin\Debug\net9.0\Npgsql.dll
-D:\MyApp\ThamClass\ClassManager\src\Api\bin\Debug\net9.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 D:\MyApp\ThamClass\ClassManager\src\Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
 D:\MyApp\ThamClass\ClassManager\src\Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\MyApp\ThamClass\ClassManager\src\Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
