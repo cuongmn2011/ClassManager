@@ -8,10 +8,10 @@ namespace Application.DTOs.Common
         public int StatusCode { get; private set; }
         public bool IsSuccess { get; private set; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public T? Result { get; private set; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public List<string>? Errors { get; private set; }
 
         // Private constructor to enforce using static factory methods

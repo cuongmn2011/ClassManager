@@ -30,6 +30,7 @@ builder.Services.AddIdentity<Domain.Entities.User, Domain.Entities.Role>(options
 
 // Add the Mock Service to the DI container.
 builder.Services.AddScoped<IStudentService, MockStudentService>();
+builder.Services.AddScoped<ITeacherService, MockTeacherService>();
 // Add services for controllers.
 builder.Services.AddControllers();
 
