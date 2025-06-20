@@ -1,8 +1,8 @@
 // File: src/Api/Controllers/StudentsController.cs
 using Application.DTOs.Common; // Add this using
 using Application.DTOs.Students;
-using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Application.Interfaces;
 
 namespace Api.Controllers
 {
@@ -65,7 +65,7 @@ namespace Api.Controllers
             {
                 return NotFound(ApiResponse<bool>.Fail("Student not found to update.", 404));
             }
-            return Ok(ApiResponse<bool>.Success(true, 200)); // Or return NoContent() with a custom response if needed.
+            return Ok(ApiResponse<string>.Success(id, 200)); // Or return NoContent() with a custom response if needed.
         }
 
         [HttpDelete("{id}")]
@@ -76,7 +76,7 @@ namespace Api.Controllers
             {
                 return NotFound(ApiResponse<bool>.Fail("Student not found to delete.", 404));
             }
-            return Ok(ApiResponse<bool>.Success(true, 200));
+            return Ok(ApiResponse<object>.Success(null, 200));
         }
     }
 }
