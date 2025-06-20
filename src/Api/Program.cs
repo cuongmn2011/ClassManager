@@ -32,6 +32,7 @@ builder.Services.AddIdentity<Domain.Entities.User, Domain.Entities.Role>(options
 builder.Services.AddScoped<IStudentService, MockStudentService>();
 builder.Services.AddScoped<ITeacherService, MockTeacherService>();
 builder.Services.AddScoped<IBranchService, MockBranchService>();
+builder.Services.AddScoped<IClassService, MockClassService>();
 // Add services for controllers.
 builder.Services.AddControllers();
 
