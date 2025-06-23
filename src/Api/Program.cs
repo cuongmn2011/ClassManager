@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Infrastructure.Services;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using Infrastructure.Security.Authorization;
+using Domain.Constants;
 
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -60,6 +63,18 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+//Configure Authorization
+builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+builder.Services.AddAuthorization(options =>
+{
+    // Dynamically add a policy for each permission defined in the Permissions class
+    foreach (var permission in Permissions.GetAllPermissions())
+    {
+        options.AddPolicy(permission, policy =>
+            policy.AddRequirements(new PermissionRequirement(permission)));
+    }
+});
+
 // Add services for controllers.
 builder.Services.AddControllers();
 
@@ -86,7 +101,10 @@ using (var scope = app.Services.CreateScope())
 
         var userManager = services.GetRequiredService<UserManager<User>>();
         var roleManager = services.GetRequiredService<RoleManager<Role>>();
+        // Seed default roles and the admin user
         await ApplicationDbContextSeed.SeedDefaultUserAndRolesAsync(userManager, roleManager);
+        // Seed permissions and grant all to admin
+        await ApplicationDbContextSeed.SeedPermissionsAsync(context, roleManager);
     }
     catch (Exception ex)
     {

@@ -3,6 +3,8 @@ using Application.DTOs.Branches;
 using Application.DTOs.Common;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
@@ -18,6 +20,7 @@ namespace Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = Permissions.Branches.View)]
         public async Task<IActionResult> GetBranches()
         {
             var branches = await _branchService.GetBranchesAsync();
@@ -25,6 +28,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = Permissions.Branches.View)]
         public async Task<IActionResult> GetBranchById(string id)
         {
             var branch = await _branchService.GetBranchByIdAsync(id);
@@ -33,6 +37,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Permissions.Branches.Create)]
         public async Task<IActionResult> CreateBranch([FromBody] CreateUpdateBranchDto createDto)
         {
             var newBranch = await _branchService.CreateBranchAsync(createDto);
@@ -41,6 +46,7 @@ namespace Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = Permissions.Branches.Edit)]
         public async Task<IActionResult> UpdateBranch(string id, [FromBody] CreateUpdateBranchDto updateDto)
         {
             var success = await _branchService.UpdateBranchAsync(id, updateDto);
@@ -50,6 +56,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = Permissions.Branches.Delete)]
         public async Task<IActionResult> DeleteBranch(string id)
         {
             var success = await _branchService.DeleteBranchAsync(id);

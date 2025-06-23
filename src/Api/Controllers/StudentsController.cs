@@ -3,6 +3,8 @@ using Application.DTOs.Common; // Add this using
 using Application.DTOs.Students;
 using Microsoft.AspNetCore.Mvc;
 using Application.Interfaces;
+using Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
@@ -17,6 +19,7 @@ namespace Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = Permissions.Students.View)]
         public async Task<IActionResult> GetStudents()
         {
             var students = await _studentService.GetStudentsAsync();
@@ -26,6 +29,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = Permissions.Students.View)]
         public async Task<IActionResult> GetStudentById(string id)
         {
             var student = await _studentService.GetStudentByIdAsync(id);
@@ -40,6 +44,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Permissions.Students.Create)]
         public async Task<IActionResult> CreateStudent([FromBody] CreateStudentDto createStudentDto)
         {
             if (!ModelState.IsValid)
@@ -53,6 +58,7 @@ namespace Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = Permissions.Students.Edit)]
         public async Task<IActionResult> UpdateStudent(string id, [FromBody] UpdateStudentDto updateStudentDto)
         {
             if (!ModelState.IsValid)
@@ -69,6 +75,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = Permissions.Students.Delete)]
         public async Task<IActionResult> DeleteStudent(string id)
         {
             var success = await _studentService.DeleteStudentAsync(id);
