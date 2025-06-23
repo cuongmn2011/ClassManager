@@ -3,6 +3,8 @@ using Application.DTOs.Common;
 using Application.DTOs.Teachers;
 using Microsoft.AspNetCore.Mvc;
 using Application.Interfaces;
+using Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
@@ -18,6 +20,7 @@ namespace Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = Permissions.Teachers.View)]
         public async Task<IActionResult> GetTeachers()
         {
             var teachers = await _teacherService.GetTeachersAsync();
@@ -25,6 +28,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = Permissions.Teachers.View)]
         public async Task<IActionResult> GetTeacherById(string id)
         {
             var teacher = await _teacherService.GetTeacherByIdAsync(id);
@@ -36,6 +40,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Permissions.Teachers.Create)]
         public async Task<IActionResult> CreateTeacher([FromBody] CreateTeacherDto createTeacherDto)
         {
             var newTeacher = await _teacherService.CreateTeacherAsync(createTeacherDto);
@@ -44,6 +49,7 @@ namespace Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = Permissions.Teachers.Edit)]
         public async Task<IActionResult> UpdateTeacher(string id, [FromBody] UpdateTeacherDto updateTeacherDto)
         {
             var success = await _teacherService.UpdateTeacherAsync(id, updateTeacherDto);
@@ -55,6 +61,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = Permissions.Teachers.Delete)]
         public async Task<IActionResult> DeleteTeacher(string id)
         {
             var success = await _teacherService.DeleteTeacherAsync(id);

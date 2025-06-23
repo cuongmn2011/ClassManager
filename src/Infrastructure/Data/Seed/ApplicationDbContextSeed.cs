@@ -1,6 +1,8 @@
 // File: src/Infrastructure/Data/Seed/ApplicationDbContextSeed.cs
+using Domain.Constants;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,6 +38,45 @@ namespace Infrastructure.Data.Seed
                 {
                     await userManager.AddToRoleAsync(defaultAdmin, "Admin");
                 }
+            }
+        }
+
+        public static async Task SeedPermissionsAsync(ApplicationDbContext context, RoleManager<Role> roleManager)
+        {
+            // 1. Seed Permissions from the static class to the database
+            var allPermissions = Permissions.GetAllPermissions();
+            var existingPermissions = await context.Permissions.Select(p => p.Name).ToListAsync();
+
+            var newPermissions = allPermissions.Except(existingPermissions);
+
+            foreach (var permissionName in newPermissions)
+            {
+                await context.Permissions.AddAsync(new Permission { Name = permissionName });
+            }
+            await context.SaveChangesAsync();
+
+            // 2. Grant all permissions to the Admin role
+            var adminRole = await roleManager.FindByNameAsync("Admin");
+            if (adminRole != null)
+            {
+                var allDbPermissions = await context.Permissions.ToListAsync();
+                var currentAdminPermissions = await context.RolePermissions
+                                                    .Where(rp => rp.RoleId == adminRole.Id)
+                                                    .Select(rp => rp.PermissionId)
+                                                    .ToListAsync();
+
+                foreach (var permission in allDbPermissions)
+                {
+                    if (!currentAdminPermissions.Contains(permission.Id))
+                    {
+                        await context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            RoleId = adminRole.Id,
+                            PermissionId = permission.Id
+                        });
+                    }
+                }
+                await context.SaveChangesAsync();
             }
         }
     }

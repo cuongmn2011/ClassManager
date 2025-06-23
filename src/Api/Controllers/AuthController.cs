@@ -6,6 +6,7 @@ using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
@@ -33,6 +34,7 @@ namespace Api.Controllers
         /// <param name="loginDto">The login credentials.</param>
         /// <returns>A JWT on successful login.</returns>
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginDto)
         {
             // Find the user by their user name.

@@ -10,6 +10,8 @@ namespace Infrastructure.Data
     // We specify our custom User and Role classes, with string as the primary key type.
     public class ApplicationDbContext : IdentityDbContext<User, Role, string>
     {
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
@@ -32,6 +34,27 @@ namespace Infrastructure.Data
             builder.Entity<IdentityUserLogin<string>>(entity => { entity.ToTable("UserLogins"); });
             builder.Entity<IdentityRoleClaim<string>>(entity => { entity.ToTable("RoleClaims"); });
             builder.Entity<IdentityUserToken<string>>(entity => { entity.ToTable("UserTokens"); });
+
+            // Configure the many-to-many relationship between Role and Permission
+            // using the RolePermission join table.
+            builder.Entity<RolePermission>(entity =>
+            {
+                // Set the composite primary key
+                entity.HasKey(rp => new { rp.RoleId, rp.PermissionId });
+
+                // Configure the relationship to the Role entity
+                entity.HasOne(rp => rp.Role)
+                    .WithMany() // A Role can have many RolePermissions
+                    .HasForeignKey(rp => rp.RoleId);
+
+                // Configure the relationship to the Permission entity
+                entity.HasOne(rp => rp.Permission)
+                    .WithMany() // A Permission can be in many RolePermissions
+                    .HasForeignKey(rp => rp.PermissionId);
+                
+                // Set the table name for the join table
+                entity.ToTable("RolePermissions");
+            });
         }
     }
 }

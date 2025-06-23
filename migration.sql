@@ -9,6 +9,12 @@ END;
 GO
 
 BEGIN TRANSACTION;
+CREATE TABLE [Permissions] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_Permissions] PRIMARY KEY ([Id])
+);
+
 CREATE TABLE [Roles] (
     [Id] nvarchar(450) NOT NULL,
     [Description] nvarchar(max) NULL,
@@ -50,6 +56,14 @@ CREATE TABLE [RoleClaims] (
     CONSTRAINT [FK_RoleClaims_Roles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [Roles] ([Id]) ON DELETE CASCADE
 );
 
+CREATE TABLE [RolePermissions] (
+    [RoleId] nvarchar(450) NOT NULL,
+    [PermissionId] int NOT NULL,
+    CONSTRAINT [PK_RolePermissions] PRIMARY KEY ([RoleId], [PermissionId]),
+    CONSTRAINT [FK_RolePermissions_Permissions_PermissionId] FOREIGN KEY ([PermissionId]) REFERENCES [Permissions] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_RolePermissions_Roles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [Roles] ([Id]) ON DELETE CASCADE
+);
+
 CREATE TABLE [UserClaims] (
     [Id] int NOT NULL IDENTITY,
     [UserId] nvarchar(450) NOT NULL,
@@ -87,6 +101,8 @@ CREATE TABLE [UserTokens] (
 
 CREATE INDEX [IX_RoleClaims_RoleId] ON [RoleClaims] ([RoleId]);
 
+CREATE INDEX [IX_RolePermissions_PermissionId] ON [RolePermissions] ([PermissionId]);
+
 CREATE UNIQUE INDEX [RoleNameIndex] ON [Roles] ([NormalizedName]) WHERE [NormalizedName] IS NOT NULL;
 
 CREATE INDEX [IX_UserClaims_UserId] ON [UserClaims] ([UserId]);
@@ -100,7 +116,7 @@ CREATE INDEX [EmailIndex] ON [Users] ([NormalizedEmail]);
 CREATE UNIQUE INDEX [UserNameIndex] ON [Users] ([NormalizedUserName]) WHERE [NormalizedUserName] IS NOT NULL;
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20250622172128_InitialSchema', N'9.0.6');
+VALUES (N'20250623180225_InitialSchema', N'9.0.6');
 
 COMMIT;
 GO

@@ -3,6 +3,8 @@ using Application.DTOs.Classes;
 using Application.DTOs.Common;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
@@ -17,6 +19,7 @@ namespace Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = Permissions.Classes.View)]
         public async Task<IActionResult> GetClasses()
         {
             var classes = await _classService.GetClassesAsync();
@@ -24,6 +27,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = Permissions.Classes.View)]
         public async Task<IActionResult> GetClassById(string id)
         {
             var @class = await _classService.GetClassByIdAsync(id);
@@ -32,6 +36,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Permissions.Classes.Create)]
         public async Task<IActionResult> CreateClass([FromBody] CreateUpdateClassDto createDto)
         {
             var newClass = await _classService.CreateClassAsync(createDto);
@@ -40,6 +45,7 @@ namespace Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = Permissions.Classes.Edit)]
         public async Task<IActionResult> UpdateClass(string id, [FromBody] CreateUpdateClassDto updateDto)
         {
             var success = await _classService.UpdateClassAsync(id, updateDto);
@@ -48,6 +54,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = Permissions.Classes.Delete)]
         public async Task<IActionResult> DeleteClass(string id)
         {
             var success = await _classService.DeleteClassAsync(id);
