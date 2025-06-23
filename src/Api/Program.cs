@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using DotNetEnv;
 using Infrastructure.Data.Seed;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Infrastructure.Services;
+using System.Text;
 
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +38,28 @@ builder.Services.AddScoped<IStudentService, MockStudentService>();
 builder.Services.AddScoped<ITeacherService, MockTeacherService>();
 builder.Services.AddScoped<IBranchService, MockBranchService>();
 builder.Services.AddScoped<IClassService, MockClassService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+
+//Configure JWT Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["JWT_ISSUER"],
+        ValidAudience = builder.Configuration["JWT_AUDIENCE"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT_SECRET"]))
+    };
+});
+
 // Add services for controllers.
 builder.Services.AddControllers();
 
@@ -78,6 +104,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Authentication middleware
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Add middleware for routing to controllers.
 app.MapControllers();
