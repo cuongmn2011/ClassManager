@@ -7,6 +7,7 @@ using Api.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using DotNetEnv;
+using Infrastructure.Data.Seed;
 
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -56,6 +57,10 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<ApplicationDbContext>();
         // Ensure the database is created and apply any pending migrations
         context.Database.Migrate();
+
+        var userManager = services.GetRequiredService<UserManager<User>>();
+        var roleManager = services.GetRequiredService<RoleManager<Role>>();
+        await ApplicationDbContextSeed.SeedDefaultUserAndRolesAsync(userManager, roleManager);
     }
     catch (Exception ex)
     {

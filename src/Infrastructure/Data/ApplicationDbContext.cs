@@ -1,6 +1,7 @@
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Data
 {
@@ -23,6 +24,14 @@ namespace Infrastructure.Data
         {
             base.OnModelCreating(builder);
             // Configure entity relationships and properties here if needed in the future.
+            // Change name table of ASP.NET Core Identity
+            builder.Entity<User>(entity => { entity.ToTable(name: "Users"); });
+            builder.Entity<Role>(entity => { entity.ToTable(name: "Roles"); });
+            builder.Entity<IdentityUserRole<string>>(entity => { entity.ToTable("UserRoles"); });
+            builder.Entity<IdentityUserClaim<string>>(entity => { entity.ToTable("UserClaims"); });
+            builder.Entity<IdentityUserLogin<string>>(entity => { entity.ToTable("UserLogins"); });
+            builder.Entity<IdentityRoleClaim<string>>(entity => { entity.ToTable("RoleClaims"); });
+            builder.Entity<IdentityUserToken<string>>(entity => { entity.ToTable("UserTokens"); });
         }
     }
 }
