@@ -37,6 +37,11 @@ namespace Domain.Constants
             public const string Edit = "Permissions.Classes.Edit";
             public const string Delete = "Permissions.Classes.Delete";
         }
+        public static class Roles
+        {
+            public const string View = "Permissions.Roles.View";
+            public const string Edit = "Permissions.Roles.Edit";
+        }
 
         /// <summary>
         /// A helper method to get all defined permissions.
