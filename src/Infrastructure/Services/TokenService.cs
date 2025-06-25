@@ -1,13 +1,17 @@
 // File: src/Infrastructure/Services/TokenService.cs
 using Application.Interfaces;
 using Domain.Entities;
+using Infrastructure.Data; 
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq; 
 using System.Security.Claims;
+using System.Security.Cryptography; 
 using System.Text;
+using System.Threading.Tasks; 
 
 namespace Infrastructure.Services
 {
@@ -15,10 +19,12 @@ namespace Infrastructure.Services
     {
         private readonly SymmetricSecurityKey _key;
         private readonly IConfiguration _config;
+        private readonly ApplicationDbContext _context;
 
-        public TokenService(IConfiguration config)
+        public TokenService(IConfiguration config, ApplicationDbContext context)
         {
             _config = config;
+            _context = context;
             // Get the secret key from configuration and create a SymmetricSecurityKey
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT_SECRET"]));
         }
@@ -60,6 +66,29 @@ namespace Infrastructure.Services
 
             // Write the token to a string
             return tokenHandler.WriteToken(token);
+        }
+        public async Task<string> CreateAndSaveRefreshTokenAsync(User user)
+        {
+            // Generate a secure random string for the refresh token
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            var refreshTokenString = Convert.ToBase64String(randomNumber);
+
+            // Create the refresh token entity
+            var refreshToken = new UserRefreshToken
+            {
+                UserId = user.Id,
+                Token = refreshTokenString,
+                ExpiresAt = DateTime.UtcNow.AddDays(7), // Refresh token expires in 7 days
+                CreatedAt = DateTime.UtcNow
+            };
+
+            // Save the refresh token to the database
+            await _context.UserRefreshTokens.AddAsync(refreshToken);
+            await _context.SaveChangesAsync();
+
+            return refreshTokenString;
         }
     }
 }
