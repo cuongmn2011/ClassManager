@@ -7,5 +7,7 @@ namespace Domain.Entities
         public DateTime UpdatedAt { get; set; }
         public DateTime? LastLogin { get; set; } // Nullable for newly created users who haven't logged in.
         public bool IsDeleted { get; set; } = false;
+        public string FullName { get; set; } = string.Empty; // Full name of the user
+        public string? AvatarUrl { get; set; } 
     }
 }

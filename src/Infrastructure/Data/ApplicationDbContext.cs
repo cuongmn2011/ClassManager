@@ -12,6 +12,7 @@ namespace Infrastructure.Data
     {
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }

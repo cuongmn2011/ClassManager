@@ -13,5 +13,6 @@ namespace Application.Interfaces
         /// <param name="roles">A list of roles the user belongs to.</param>
         /// <returns>A JWT string.</returns>
         string CreateToken(User user, IList<string> roles);
+        Task<string> CreateAndSaveRefreshTokenAsync(User user);
     }
 }

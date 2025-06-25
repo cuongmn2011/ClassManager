@@ -2,11 +2,8 @@
 using Application.DTOs.Auth;
 using Application.DTOs.Common;
 using Application.Interfaces;
-using Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
@@ -14,52 +11,51 @@ namespace Api.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-        private readonly ITokenService _tokenService;
+        private readonly IAuthService _authService;
 
-        public AuthController(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
-            ITokenService tokenService)
+        public AuthController(IAuthService authService)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _tokenService = tokenService;
+            _authService = authService;
         }
 
-        /// <summary>
-        /// Handles user login.
-        /// </summary>
-        /// <param name="loginDto">The login credentials.</param>
-        /// <returns>A JWT on successful login.</returns>
         [HttpPost("login")]
-        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginDto)
         {
-            // Find the user by their user name.
-            var user = await _userManager.FindByNameAsync(loginDto.UserName);
+            var result = await _authService.LoginAsync(loginDto);
 
-            // Check if user exists and password is correct.
-            if (user == null)
+            if (!result.IsSuccess)
             {
                 return Unauthorized(ApiResponse<object>.Fail("Invalid username or password.", 401));
             }
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-
-            if (!result.Succeeded)
+            var responseDto = new LoginResponseDto
             {
-                return Unauthorized(ApiResponse<object>.Fail("Invalid username or password.", 401));
+                Token = result.Token,
+                RefreshToken = result.RefreshToken,
+                User = result.User
+            };
+
+            return Ok(ApiResponse<LoginResponseDto>.Success(responseDto));
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto requestDto)
+        {
+            var result = await _authService.RefreshTokenAsync(requestDto.RefreshToken);
+
+            if (!result.IsSuccess)
+            {
+                return Unauthorized(ApiResponse<object>.Fail(result.ErrorMessage ?? "Invalid request.", 401));
             }
 
-            // If login is successful, get user roles and create a token.
-            var roles = await _userManager.GetRolesAsync(user);
-            var token = _tokenService.CreateToken(user, roles);
+            var responseDto = new LoginResponseDto
+            {
+                Token = result.Token,
+                RefreshToken = result.RefreshToken,
+                User = result.User
+            };
 
-            var response = new LoginResponseDto { Token = token };
-
-            return Ok(ApiResponse<LoginResponseDto>.Success(response));
+            return Ok(ApiResponse<LoginResponseDto>.Success(responseDto));
         }
     }
 }
