@@ -43,6 +43,7 @@ builder.Services.AddScoped<IBranchService, MockBranchService>();
 builder.Services.AddScoped<IClassService, MockClassService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
 //Configure JWT Authentication
 builder.Services.AddAuthentication(options =>
 {

@@ -15,13 +15,15 @@ namespace Infrastructure.Services
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly ApplicationDbContext _context;
+        private readonly IPermissionService _permissionService;
 
-        public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, ITokenService tokenService, ApplicationDbContext context)
+        public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, ITokenService tokenService, ApplicationDbContext context, IPermissionService permissionService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
             _context = context;
+            _permissionService = permissionService;
         }
 
         public async Task<(bool IsSuccess, string? Token, string? RefreshToken, UserInfo? User)> LoginAsync(LoginRequestDto loginDto)
@@ -33,6 +35,7 @@ namespace Infrastructure.Services
             }
 
             var roles = await _userManager.GetRolesAsync(user);
+            var permissions = await _permissionService.GetPermissionsForUserAsync(user.Id);
             var token = _tokenService.CreateToken(user, roles);
             var refreshToken = await _tokenService.CreateAndSaveRefreshTokenAsync(user);
 
@@ -42,7 +45,8 @@ namespace Infrastructure.Services
                 UserName = user.UserName,
                 Email = user.Email,
                 FullName = user.FullName,
-                AvatarUrl = user.AvatarUrl
+                AvatarUrl = user.AvatarUrl,
+                Permissions = permissions
             };
 
             return (true, token, refreshToken, userInfo);
