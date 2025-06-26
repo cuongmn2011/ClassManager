@@ -27,6 +27,7 @@ namespace Infrastructure.Data.Seed
                 {
                     UserName = "admin",
                     Email = "cuongmn@gmail.com",
+                    FullName = "Administrator",
                     EmailConfirmed = true,
                     PhoneNumberConfirmed = true,
                     CreatedAt = DateTime.UtcNow
@@ -37,6 +38,23 @@ namespace Infrastructure.Data.Seed
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(defaultAdmin, "Admin");
+                }
+
+                //Create the second admin user
+                var defaultAdmin2 = new User
+                {
+                    UserName = "admin2",
+                    Email = "cuongmn2@gmail.com",
+                    FullName = "Administrator 2",
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = true,
+                    CreatedAt = DateTime.UtcNow
+                };
+                var result2 = await userManager.CreateAsync(defaultAdmin2, "m@nhCuong201196"); // Using the same password for convenience
+
+                if (result2.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(defaultAdmin2, "Admin");
                 }
             }
         }

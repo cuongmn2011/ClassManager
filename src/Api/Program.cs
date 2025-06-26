@@ -45,6 +45,8 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 //Configure JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -124,6 +126,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 // Authentication middleware
 app.UseAuthentication();

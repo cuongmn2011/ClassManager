@@ -5,6 +5,7 @@ using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace Api.Controllers
 {
@@ -68,6 +69,25 @@ namespace Api.Controllers
             var success = await _userService.DeleteUserAsync(id);
             if (!success) return NotFound(ApiResponse<bool>.Fail("User not found.", 404));
             return Ok(ApiResponse<object>.Success(null));
+        }
+
+        [HttpPost("{id}/avatar")]
+        [Authorize(Policy = Permissions.Users.Edit)]
+        public async Task<IActionResult> UploadAvatar(string id, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest(ApiResponse<object>.Fail("No file uploaded."));
+            }
+
+            var result = await _userService.UpdateUserAvatarAsync(id, file);
+
+            if (!result.Succeeded)
+            {
+                return NotFound(ApiResponse<object>.Fail("User not found."));
+            }
+
+            return Ok(ApiResponse<object>.Success(new { avatarUrl = result.newAvatarUrl }));
         }
     }
 }

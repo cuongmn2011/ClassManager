@@ -16,6 +16,7 @@ services:
     volumes:
       # Gắn thư mục .certs từ máy bạn vào thư mục /https trong container
       - ./.certs:/https/
+      - ./fileupload:/app/wwwroot/uploads
     environment:
       # Sử dụng biến đã được định nghĩa trong file .env
       - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
@@ -27,3 +28,4 @@ services:
       - Kestrel__Certificates__Default__Password=${KestrelCertPassword}
       # Chỉ cho Kestrel biết đường dẫn tới file chứng chỉ BÊN TRONG container
       - Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    
