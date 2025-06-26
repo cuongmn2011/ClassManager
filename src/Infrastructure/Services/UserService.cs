@@ -4,15 +4,18 @@ using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Services
 {
     public class UserService : IUserService
     {
         private readonly UserManager<User> _userManager;
-        public UserService(UserManager<User> userManager)
+        private readonly IFileStorageService _fileStorageService;
+        public UserService(UserManager<User> userManager, IFileStorageService fileStorageService)
         {
             _userManager = userManager;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task<IEnumerable<UserDto>> GetUsersAsync()
@@ -100,6 +103,30 @@ namespace Infrastructure.Services
 
             var result = await _userManager.DeleteAsync(user);
             return result.Succeeded;
+        }
+
+        public async Task<(bool Succeeded, string? newAvatarUrl)> UpdateUserAvatarAsync(string userId, IFormFile avatarFile)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return (false, null);
+            }
+
+            // Delete the old avatar if it exists
+            if (!string.IsNullOrEmpty(user.AvatarUrl))
+            {
+                _fileStorageService.DeleteFile(user.AvatarUrl);
+            }
+
+            // Save the new avatar and get the public URL
+            var newAvatarUrl = await _fileStorageService.SaveFileAsync(avatarFile, "uploads/avatars");
+
+            // Update the user's record in the database
+            user.AvatarUrl = newAvatarUrl;
+            await _userManager.UpdateAsync(user);
+
+            return (true, newAvatarUrl);
         }
     }
 }

@@ -25,6 +25,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 COPY --from=build /app/publish .
 
+# Create the wwwroot folder to ensure WebRootPath is not null
+RUN mkdir wwwroot
+
 EXPOSE 8080
 EXPOSE 8081
 
