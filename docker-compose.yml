@@ -23,7 +23,6 @@ services:
       # Cấu hình các URL
       - ASPNETCORE_URLS=https://+:8081;http://+:8080
       - ASPNETCORE_ENVIRONMENT=Development
-      # === PHẦN BỊ THIẾU LÀ Ở ĐÂY ===
       # Chỉ cho Kestrel biết mật khẩu của file chứng chỉ
       - Kestrel__Certificates__Default__Password=${KestrelCertPassword}
       # Chỉ cho Kestrel biết đường dẫn tới file chứng chỉ BÊN TRONG container

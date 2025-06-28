@@ -1,4 +1,5 @@
 using Application.DTOs.Teachers;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Interfaces
 {
@@ -28,5 +29,7 @@ namespace Application.Interfaces
         /// Deletes a teacher by their unique ID.
         /// </summary>
         Task<bool> DeleteTeacherAsync(string teacherId);
+
+        Task<(bool Succeeded, string? newAvatarUrl)> UpdateTeacherAvatarAsync(string teacherId, IFormFile avatarFile);
     }
 }
