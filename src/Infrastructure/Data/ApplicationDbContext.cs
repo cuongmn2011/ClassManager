@@ -13,6 +13,10 @@ namespace Infrastructure.Data
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<Branch> Branches { get; set; }
+        public DbSet<Class> Classes { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
@@ -52,9 +56,16 @@ namespace Infrastructure.Data
                 entity.HasOne(rp => rp.Permission)
                     .WithMany() // A Permission can be in many RolePermissions
                     .HasForeignKey(rp => rp.PermissionId);
-                
+
                 // Set the table name for the join table
                 entity.ToTable("RolePermissions");
+            });
+            
+            // Configure the Class entity
+            builder.Entity<Class>(entity =>
+            {
+                // Specify the column type for FeeAmount to avoid data truncation
+                entity.Property(c => c.FeeAmount).HasColumnType("decimal(18, 2)");
             });
         }
     }

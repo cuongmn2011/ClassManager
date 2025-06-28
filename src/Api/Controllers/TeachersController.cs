@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Application.Interfaces;
 using Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace Api.Controllers
 {
@@ -70,6 +71,25 @@ namespace Api.Controllers
                 return NotFound(ApiResponse<bool>.Fail("Teacher not found to delete.", 404));
             }
             return Ok(ApiResponse<object>.Success(null, 200));
+        }
+
+        [HttpPost("{id}/avatar")]
+        [Authorize(Policy = Permissions.Teachers.Edit)]
+        public async Task<IActionResult> UploadAvatar(string id, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest(ApiResponse<object>.Fail("No file uploaded."));
+            }
+
+            var result = await _teacherService.UpdateTeacherAvatarAsync(id, file);
+
+            if (!result.Succeeded)
+            {
+                return NotFound(ApiResponse<object>.Fail("Teacher not found or failed to update avatar."));
+            }
+            
+            return Ok(ApiResponse<object>.Success(new { avatarUrl = result.newAvatarUrl }));
         }
     }
 }

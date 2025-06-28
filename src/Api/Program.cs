@@ -37,10 +37,10 @@ builder.Services.AddIdentity<Domain.Entities.User, Domain.Entities.Role>(options
 .AddDefaultTokenProviders();
 
 // Add the Mock Service to the DI container.
-builder.Services.AddScoped<IStudentService, MockStudentService>();
-builder.Services.AddScoped<ITeacherService, MockTeacherService>();
-builder.Services.AddScoped<IBranchService, MockBranchService>();
-builder.Services.AddScoped<IClassService, MockClassService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ITeacherService, TeacherService>();
+builder.Services.AddScoped<IBranchService, BranchService>();
+builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();

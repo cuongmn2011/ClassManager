@@ -1,4 +1,5 @@
 using Application.DTOs.Students;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Interfaces
 {
@@ -38,5 +39,7 @@ namespace Application.Interfaces
         /// <param name="studentId">The unique identifier of the student to delete.</param>
         /// <returns>A task that represents the asynchronous operation. The task result is true if the deletion was successful, and false if the student was not found.</returns>
         Task<bool> DeleteStudentAsync(string studentId);
+
+        Task<(bool Succeeded, string? newAvatarUrl)> UpdateStudentAvatarAsync(string studentId, IFormFile avatarFile);
     }
 }
