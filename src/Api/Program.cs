@@ -3,7 +3,6 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Application.Interfaces;
-using Api.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using DotNetEnv;
